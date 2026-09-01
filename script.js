@@ -34,6 +34,24 @@ const CONFIG = {
       artist: "Raim Laode",
       src: "assets/music/song-03.mp3",
     },
+
+    {
+      title: "Kota Ini Tak Sama Tanpamu",
+      artist: "Nadhif Basalamah",
+      src: "assets/music/song-04.mp3",
+    },
+
+    {
+      title: "Iqro",
+      artist: "Raim Laode",
+      src: "assets/music/song-05.mp3",
+    },
+
+    {
+      title: "Masa Ini, Nanti, dan Masa Indah Lainnya",
+      artist: "Nuca",
+      src: "assets/music/song-06.mp3",
+    },
   ],
 
   gratitude: [
