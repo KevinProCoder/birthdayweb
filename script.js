@@ -1,5 +1,4 @@
 const CONFIG = {
-
   // Ganti PIN di sini.
   SECRET_PIN: "2205",
 
@@ -8,39 +7,36 @@ const CONFIG = {
   popupDelayMs: 3500,
 
   photos: Array.from(
-    {length:10},
-    (_,i)=>`assets/photos/photo-${String(i+1).padStart(2,"0")}.svg`
+    { length: 10 },
+    (_, i) => `assets/photos/photo-${String(i + 1).padStart(2, "0")}.svg`,
   ),
 
   captions: Array.from(
-    {length:10},
-    (_,i)=>`Memory ${String(i+1).padStart(2,"0")} 💗`
+    { length: 10 },
+    (_, i) => `Memory ${String(i + 1).padStart(2, "0")} 💗`,
   ),
 
   songs: [
-
     {
-      title:"Lagu Pilihan 1",
-      artist:"Nama Artis",
-      src:"assets/music/song-01.mp3"
+      title: "Shape of My Heart",
+      artist: "The Backstreet Boys",
+      src: "assets/music/song-01.mp3",
     },
 
     {
-      title:"Lagu Pilihan 2",
-      artist:"Nama Artis",
-      src:"assets/music/song-02.mp3"
+      title: "Beauty and the Beat",
+      artist: "Justin Bieber ft Nicky Minaj",
+      src: "assets/music/song-02.mp3",
     },
 
     {
-      title:"Lagu Pilihan 3",
-      artist:"Nama Artis",
-      src:"assets/music/song-03.mp3"
-    }
-
+      title: "Dunia Yang Nanti",
+      artist: "Raim Laode",
+      src: "assets/music/song-03.mp3",
+    },
   ],
 
   gratitude: [
-
     "Kamu selalu bisa membuat hari yang biasa terasa sedikit lebih ringan.",
 
     "Terima kasih sudah menjadi seseorang yang membawa banyak cerita indah.",
@@ -49,17 +45,13 @@ const CONFIG = {
 
     "Semoga senyummu selalu punya alasan untuk hadir setiap hari.",
 
-    "Aku bersyukur karena ada begitu banyak momen kecil yang layak dikenang bersamamu."
-
-  ]
-
+    "Aku bersyukur karena ada begitu banyak momen kecil yang layak dikenang bersamamu.",
+  ],
 };
 
+const $ = (s) => document.querySelector(s);
 
-const $ = s => document.querySelector(s);
-
-const $$ = s => [...document.querySelectorAll(s)];
-
+const $$ = (s) => [...document.querySelectorAll(s)];
 
 let pin = "";
 
@@ -71,125 +63,75 @@ let songIndex = 0;
 
 let audioStarted = false;
 
-
-
 /* =========================================
    LOADING
 ========================================= */
 
 window.addEventListener("load", () => {
-
   setTimeout(() => {
-
     $("#loadingScreen").classList.add("hidden");
 
     $("#pinScreen").classList.remove("hidden");
-
   }, CONFIG.loadingMs);
-
 });
-
-
 
 /* =========================================
    PIN
 ========================================= */
 
-function updatePin(){
-
-  $$("#pinDots i").forEach(
-    (dot,i)=>
-      dot.classList.toggle(
-        "filled",
-        i < pin.length
-      )
+function updatePin() {
+  $$("#pinDots i").forEach((dot, i) =>
+    dot.classList.toggle("filled", i < pin.length),
   );
 
-  $("#pinDisplay").textContent =
-    pin ? "•".repeat(pin.length) : "";
-
+  $("#pinDisplay").textContent = pin ? "•".repeat(pin.length) : "";
 }
 
-
-function enterMain(){
-
+function enterMain() {
   $("#pinScreen").classList.add("hidden");
-
   $("#giftScreen").classList.remove("hidden");
 
+  // Siapkan lagu pertama
+  selectSong(0, false);
 }
 
-
-$$(".keypad button").forEach(btn=>{
-
-  btn.addEventListener("click",()=>{
-
+$$(".keypad button").forEach((btn) => {
+  btn.addEventListener("click", () => {
     const key = btn.dataset.key;
 
-    if(key === "clear"){
-
+    if (key === "clear") {
       pin = "";
-
-    }
-
-    else if(key === "back"){
-
-      pin = pin.slice(0,-1);
-
-    }
-
-    else if(pin.length < 4){
-
+    } else if (key === "back") {
+      pin = pin.slice(0, -1);
+    } else if (pin.length < 4) {
       pin += key;
-
     }
 
     updatePin();
 
-
-    if(pin.length === 4){
-
-      if(pin === CONFIG.SECRET_PIN){
-
+    if (pin.length === 4) {
+      if (pin === CONFIG.SECRET_PIN) {
         $("#pinError").textContent = "";
 
-        setTimeout(
-          enterMain,
-          250
-        );
-
-      }
-
-      else{
-
-        $("#pinError").textContent =
-          "Secret code belum tepat 💗";
+        setTimeout(enterMain, 250);
+      } else {
+        $("#pinError").textContent = "Secret code belum tepat 💗";
 
         pin = "";
 
-        setTimeout(
-          updatePin,
-          200
-        );
-
+        setTimeout(updatePin, 200);
       }
-
     }
-
   });
-
 });
-
-
 
 /* =========================================
    GIFT
 ========================================= */
 
-$("#giftBox").addEventListener("click",()=>{
-
+$("#giftBox").addEventListener("click", () => {
   // Cegah gift diklik berkali-kali
-  if($("#giftBox").classList.contains("opening")) return;
+  if ($("#giftBox").classList.contains("opening")) return;
 
   $("#giftBox").classList.add("opening");
 
@@ -200,21 +142,20 @@ $("#giftBox").addEventListener("click",()=>{
   createGiftShockwave();
 
   // Ledakan kedua sedikit terlambat
-  setTimeout(()=>{
+  setTimeout(() => {
     burstFlowers(35);
-  },250);
+  }, 250);
 
   // Ledakan ketiga
-  setTimeout(()=>{
+  setTimeout(() => {
     burstFlowers(25);
-  },500);
+  }, 500);
 
   /*
     Setelah animasi selesai,
     pindah ke halaman utama
   */
-  setTimeout(()=>{
-
+  setTimeout(() => {
     $("#giftScreen").classList.add("hidden");
 
     $("#mainContent").classList.remove("hidden");
@@ -223,219 +164,129 @@ $("#giftBox").addEventListener("click",()=>{
 
     observeReveals();
 
-    setTimeout(()=>{
+    // 🎵 Putar lagu pertama
+    selectSong(0, true);
+
+    setTimeout(() => {
       $("#birthdayModal").classList.remove("hidden");
-    },CONFIG.popupDelayMs);
-
-  },1500);
-
+    }, CONFIG.popupDelayMs);
+  }, 1500);
 });
-
-
 
 /* =========================================
    BIRTHDAY MODAL
 ========================================= */
 
-$("#closeBirthday").addEventListener(
-  "click",
-  () =>
-    $("#birthdayModal").classList.add("hidden")
+$("#closeBirthday").addEventListener("click", () =>
+  $("#birthdayModal").classList.add("hidden"),
 );
 
-$("#birthdayModal .modal-backdrop").addEventListener(
-  "click",
-  () =>
-    $("#birthdayModal").classList.add("hidden")
+$("#birthdayModal .modal-backdrop").addEventListener("click", () =>
+  $("#birthdayModal").classList.add("hidden"),
 );
-
-
 
 /* =========================================
    FLOWERS
 ========================================= */
 
-$$(".flower").forEach(f=>{
-
-  f.addEventListener("click",()=>{
-
-    $("#flowerMessage").textContent =
-      f.dataset.message;
+$$(".flower").forEach((f) => {
+  f.addEventListener("click", () => {
+    $("#flowerMessage").textContent = f.dataset.message;
 
     $("#flowerMessage").classList.remove("hidden");
 
-    burstFlowers(6,true);
-
+    burstFlowers(6, true);
   });
-
 });
-
-
 
 /* =========================================
    LETTER TYPING
 ========================================= */
 
-const letterText =
-  [...$("#letter").children]
-    .map(p=>p.textContent);
+const letterText = [...$("#letter").children].map((p) => p.textContent);
 
 let typed = false;
 
+const letterObserver = new IntersectionObserver(
+  (entries) => {
+    if (entries.some((e) => e.isIntersecting) && !typed) {
+      typed = true;
 
-const letterObserver =
-  new IntersectionObserver(
+      const target = $("#letter");
 
-    entries=>{
+      const original = [...target.children].map((x) => x.outerHTML);
 
-      if(
-        entries.some(e=>e.isIntersecting) &&
-        !typed
-      ){
+      target.innerHTML = "";
 
-        typed = true;
+      let delay = 0;
 
-        const target = $("#letter");
+      original.forEach((html, i) => {
+        const wrap = document.createElement("div");
 
-        const original =
-          [...target.children]
-            .map(x=>x.outerHTML);
+        wrap.innerHTML = html;
 
-        target.innerHTML = "";
+        const p = wrap.firstElementChild;
 
-        let delay = 0;
+        const text = p.textContent;
 
+        p.textContent = "";
 
-        original.forEach((html,i)=>{
+        target.appendChild(p);
 
-          const wrap =
-            document.createElement("div");
-
-          wrap.innerHTML = html;
-
-          const p =
-            wrap.firstElementChild;
-
-          const text =
-            p.textContent;
-
-          p.textContent = "";
-
-          target.appendChild(p);
-
-
-          typeText(
-            p,
-            text,
-            Math.min(
-              18,
-              Math.max(
-                5,
-                700/text.length
-              )
-            )
-          );
-
-        });
-
-      }
-
-    },
-
-    {
-      threshold:.25
+        typeText(p, text, Math.min(18, Math.max(5, 700 / text.length)));
+      });
     }
+  },
 
-  );
-
-
-letterObserver.observe(
-  $("#letter")
+  {
+    threshold: 0.25,
+  },
 );
 
+letterObserver.observe($("#letter"));
 
-
-function typeText(
-  el,
-  text,
-  speed
-){
-
+function typeText(el, text, speed) {
   let i = 0;
 
+  const timer = setInterval(() => {
+    el.textContent = text.slice(0, ++i);
 
-  const timer =
-    setInterval(()=>{
-
-      el.textContent =
-        text.slice(
-          0,
-          ++i
-        );
-
-
-      if(i >= text.length){
-
-        clearInterval(timer);
-
-      }
-
-    },speed);
-
+    if (i >= text.length) {
+      clearInterval(timer);
+    }
+  }, speed);
 }
-
-
 
 /* =========================================
    PHOTO MEMORY
 ========================================= */
 
-$("#photoCard").addEventListener(
-  "click",
-  ()=>{
+$("#photoCard").addEventListener("click", () => {
+  photoIndex = (photoIndex + 1) % CONFIG.photos.length;
 
-    photoIndex =
-      (photoIndex + 1) %
-      CONFIG.photos.length;
+  $("#memoryImage").src = CONFIG.photos[photoIndex];
 
+  $("#memoryCaption").textContent = CONFIG.captions[photoIndex];
 
-    $("#memoryImage").src =
-      CONFIG.photos[photoIndex];
+  $("#photoNumber").textContent = photoIndex + 1;
 
-
-    $("#memoryCaption").textContent =
-      CONFIG.captions[photoIndex];
-
-
-    $("#photoNumber").textContent =
-      photoIndex + 1;
-
-
-    $("#photoCard").animate(
-
-      [
-        {
-          transform:
-            "rotate(2deg) scale(.96)"
-        },
-
-        {
-          transform:
-            "rotate(-2deg) scale(1)"
-        }
-      ],
+  $("#photoCard").animate(
+    [
+      {
+        transform: "rotate(2deg) scale(.96)",
+      },
 
       {
-        duration:450,
-        easing:"cubic-bezier(.2,.8,.2,1)"
-      }
+        transform: "rotate(-2deg) scale(1)",
+      },
+    ],
 
-    );
-
-  }
-);
-
-
+    {
+      duration: 450,
+      easing: "cubic-bezier(.2,.8,.2,1)",
+    },
+  );
+});
 
 /* =========================================
    AUDIO PLAYER
@@ -443,260 +294,123 @@ $("#photoCard").addEventListener(
 
 const audio = $("#audio");
 
-
-function renderSongs(){
-
+function renderSongs() {
   $("#songList").innerHTML = "";
 
+  CONFIG.songs.forEach((song, i) => {
+    const item = document.createElement("div");
 
-  CONFIG.songs.forEach(
-    (song,i)=>{
+    item.className = "song-item" + (i === songIndex ? " active" : "");
 
-      const item =
-        document.createElement("div");
-
-
-      item.className =
-        "song-item" +
-        (i === songIndex
-          ? " active"
-          : ""
-        );
-
-
-      item.innerHTML =
-        `<span>♫ &nbsp; ${song.title}</span>
+    item.innerHTML = `<span>♫ &nbsp; ${song.title}</span>
          <small>${song.artist}</small>`;
 
+    item.onclick = () => selectSong(i, true);
 
-      item.onclick =
-        () =>
-          selectSong(i,true);
+    $("#songList").appendChild(item);
+  });
 
+  $("#songTitle").textContent = CONFIG.songs[songIndex].title;
 
-      $("#songList")
-        .appendChild(item);
-
-    }
-  );
-
-
-  $("#songTitle").textContent =
-    CONFIG.songs[songIndex].title;
-
-
-  $("#songArtist").textContent =
-    CONFIG.songs[songIndex].artist;
-
+  $("#songArtist").textContent = CONFIG.songs[songIndex].artist;
 }
 
-
-function selectSong(
-  i,
-  autoplay=false
-){
-
+function selectSong(i, autoplay = false) {
   songIndex = i;
 
-  audio.src =
-    CONFIG.songs[i].src;
+  audio.src = CONFIG.songs[i].src;
 
   renderSongs();
 
-
-  if(autoplay){
-
-    audio.play().catch(()=>{});
-
+  if (autoplay) {
+    audio.play().catch(() => {});
   }
-
 }
-
 
 renderSongs();
 
-
-$("#playSong").onclick = ()=>{
-
-  if(!audio.src){
-
+$("#playSong").onclick = () => {
+  if (!audio.src) {
     selectSong(songIndex);
-
   }
 
-
-  if(audio.paused){
-
-    audio.play().catch(()=>{});
-
-  }
-
-  else{
-
+  if (audio.paused) {
+    audio.play().catch(() => {});
+  } else {
     audio.pause();
-
   }
-
 };
 
+$("#nextSong").onclick = () =>
+  selectSong((songIndex + 1) % CONFIG.songs.length, true);
 
-$("#nextSong").onclick =
-  () =>
-    selectSong(
-      (songIndex + 1) %
-      CONFIG.songs.length,
-      true
-    );
+$("#prevSong").onclick = () =>
+  selectSong((songIndex - 1 + CONFIG.songs.length) % CONFIG.songs.length, true);
 
+audio.addEventListener("play", () => ($("#playSong").textContent = "Ⅱ"));
 
-$("#prevSong").onclick =
-  () =>
-    selectSong(
-      (songIndex - 1 + CONFIG.songs.length) %
-      CONFIG.songs.length,
-      true
-    );
+audio.addEventListener("pause", () => ($("#playSong").textContent = "▶"));
 
+audio.addEventListener("timeupdate", () => {
+  const pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
 
-audio.addEventListener(
-  "play",
-  () =>
-    $("#playSong").textContent = "Ⅱ"
-);
+  $("#progressBar").style.width = pct + "%";
 
+  $("#currentTime").textContent = formatTime(audio.currentTime);
 
-audio.addEventListener(
-  "pause",
-  () =>
-    $("#playSong").textContent = "▶"
-);
+  $("#duration").textContent = formatTime(audio.duration);
+});
 
+audio.addEventListener("ended", () => $("#nextSong").click());
 
-audio.addEventListener(
-  "timeupdate",
-  ()=>{
+function formatTime(sec) {
+  if (!Number.isFinite(sec)) return "0:00";
 
-    const pct =
-      audio.duration
-        ? (audio.currentTime /
-           audio.duration) * 100
-        : 0;
-
-
-    $("#progressBar").style.width =
-      pct + "%";
-
-
-    $("#currentTime").textContent =
-      formatTime(
-        audio.currentTime
-      );
-
-
-    $("#duration").textContent =
-      formatTime(
-        audio.duration
-      );
-
-  }
-);
-
-
-audio.addEventListener(
-  "ended",
-  () =>
-    $("#nextSong").click()
-);
-
-
-function formatTime(sec){
-
-  if(!Number.isFinite(sec))
-    return "0:00";
-
-
-  return `${Math.floor(sec/60)}:${String(
-    Math.floor(sec%60)
-  ).padStart(2,"0")}`;
-
+  return `${Math.floor(sec / 60)}:${String(Math.floor(sec % 60)).padStart(
+    2,
+    "0",
+  )}`;
 }
-
-
 
 /* =========================================
    GRATITUDE JAR
 ========================================= */
 
-$("#jar").addEventListener(
-  "click",
-  ()=>{
+$("#jar").addEventListener("click", () => {
+  $("#jar").classList.remove("shake");
 
-    $("#jar").classList.remove("shake");
+  void $("#jar").offsetWidth;
 
-    void $("#jar").offsetWidth;
+  $("#jar").classList.add("shake");
 
-    $("#jar").classList.add("shake");
+  setTimeout(() => {
+    noteIndex = Math.floor(Math.random() * CONFIG.gratitude.length);
 
+    $("#noteNumber").textContent = "#" + (noteIndex + 1);
 
-    setTimeout(()=>{
+    $("#noteText").textContent = CONFIG.gratitude[noteIndex];
 
-      noteIndex =
-        Math.floor(
-          Math.random() *
-          CONFIG.gratitude.length
-        );
+    $("#note").classList.remove("hidden");
 
-
-      $("#noteNumber").textContent =
-        "#" + (noteIndex + 1);
-
-
-      $("#noteText").textContent =
-        CONFIG.gratitude[noteIndex];
-
-
-      $("#note").classList.remove(
-        "hidden"
-      );
-
-
-      burstFlowers(
-        10,
-        true
-      );
-
-    },520);
-
-  }
-);
-
-
+    burstFlowers(10, true);
+  }, 520);
+});
 
 /* =========================================
    MUSIC FLOATING BUTTON
 ========================================= */
 
-$("#musicFab").addEventListener(
-  "click",
-  ()=>{
-
-    document
-      .querySelector(".playlist-section")
-      .scrollIntoView({
-        behavior:"smooth"
-      });
-
-  }
-);
-
-
+$("#musicFab").addEventListener("click", () => {
+  document.querySelector(".playlist-section").scrollIntoView({
+    behavior: "smooth",
+  });
+});
 
 /* =========================================================
    SCROLL REVEAL
    ========================================================= */
 
-function observeReveals(){
-
+function observeReveals() {
   /*
     ------------------------------------------
     BAGIAN 1
@@ -705,19 +419,13 @@ function observeReveals(){
     sistem yang sebelumnya sudah kamu punya.
   */
 
-  $$(".section").forEach(section=>{
-
-    if(
-      section.classList.contains("hero")
-    ){
+  $$(".section").forEach((section) => {
+    if (section.classList.contains("hero")) {
       return;
     }
 
     section.classList.add("reveal");
-
   });
-
-
 
   /*
     ------------------------------------------
@@ -726,38 +434,21 @@ function observeReveals(){
     Observer untuk section.
   */
 
-  const sectionObserver =
-    new IntersectionObserver(
+  const sectionObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+        }
+      });
+    },
 
-      entries=>{
-
-        entries.forEach(entry=>{
-
-          if(entry.isIntersecting){
-
-            entry.target.classList.add(
-              "visible"
-            );
-
-          }
-
-        });
-
-      },
-
-      {
-        threshold:.08
-      }
-
-    );
-
-
-  $$(".reveal").forEach(
-    element =>
-      sectionObserver.observe(element)
+    {
+      threshold: 0.08,
+    },
   );
 
-
+  $$(".reveal").forEach((element) => sectionObserver.observe(element));
 
   /*
     =====================================================
@@ -767,32 +458,19 @@ function observeReveals(){
     =====================================================
   */
 
-
-  const timelineItems =
-    $$(".timeline-item");
-
+  const timelineItems = $$(".timeline-item");
 
   /*
     Observer khusus timeline.
   */
 
-  const timelineObserver =
-    new IntersectionObserver(
+  const timelineObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
 
-      entries=>{
-
-        entries.forEach(entry=>{
-
-          if(
-            entry.isIntersecting
-          ){
-
-            entry.target.classList.add(
-              "visible"
-            );
-
-
-            /*
+          /*
               Setelah tampil, observer
               tidak perlu mengawasi item
               tersebut lagi.
@@ -801,385 +479,230 @@ function observeReveals(){
               berulang ketika scroll naik/turun.
             */
 
-            timelineObserver.unobserve(
-              entry.target
-            );
+          timelineObserver.unobserve(entry.target);
+        }
+      });
+    },
 
-          }
-
-        });
-
-      },
-
-      {
-        /*
+    {
+      /*
           Item mulai muncul ketika
           sekitar 12% bagiannya terlihat.
         */
 
-        threshold:.12,
+      threshold: 0.12,
 
-        /*
+      /*
           Membuat trigger sedikit lebih
           natural ketika scrolling.
         */
 
-        rootMargin:"0px 0px -40px 0px"
-
-      }
-
-    );
-
+      rootMargin: "0px 0px -40px 0px",
+    },
+  );
 
   /*
     Mulai mengawasi setiap timeline item.
   */
 
-  timelineItems.forEach(
-    item =>
-      timelineObserver.observe(item)
-  );
-
+  timelineItems.forEach((item) => timelineObserver.observe(item));
 }
-
-
 
 /* =========================================
    FLOWER RAIN CANVAS
 ========================================= */
 
-const canvas =
-  $("#flowerCanvas");
+const canvas = $("#flowerCanvas");
 
-const ctx =
-  canvas.getContext("2d");
+const ctx = canvas.getContext("2d");
 
+let W,
+  H,
+  flakes = [];
 
-let W,H,flakes=[];
+const chars = ["✿", "✽", "✿", "✾", "❀", "✽"];
 
+function resizeCanvas() {
+  W = canvas.width = innerWidth * devicePixelRatio;
 
-const chars = [
-  "✿",
-  "✽",
-  "✿",
-  "✾",
-  "❀",
-  "✽"
-];
+  H = canvas.height = innerHeight * devicePixelRatio;
 
+  canvas.style.width = innerWidth + "px";
 
-function resizeCanvas(){
+  canvas.style.height = innerHeight + "px";
 
-  W =
-    canvas.width =
-      innerWidth *
-      devicePixelRatio;
+  ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
 
+  const count = Math.min(55, Math.max(20, Math.floor(innerWidth / 8)));
 
-  H =
-    canvas.height =
-      innerHeight *
-      devicePixelRatio;
-
-
-  canvas.style.width =
-    innerWidth + "px";
-
-
-  canvas.style.height =
-    innerHeight + "px";
-
-
-  ctx.setTransform(
-    devicePixelRatio,
-    0,
-    0,
-    devicePixelRatio,
-    0,
-    0
-  );
-
-
-  const count =
-    Math.min(
-      55,
-      Math.max(
-        20,
-        Math.floor(innerWidth/8)
-      )
-    );
-
-
-  flakes =
-    Array.from(
-      {length:count},
-      () => newFlake(true)
-    );
-
+  flakes = Array.from({ length: count }, () => newFlake(true));
 }
 
-
-function newFlake(
-  initial=false
-){
-
+function newFlake(initial = false) {
   return {
+    x: Math.random() * innerWidth,
 
-    x:
-      Math.random() *
-      innerWidth,
+    y: initial ? Math.random() * innerHeight : -25,
 
-    y:
-      initial
-        ? Math.random() *
-          innerHeight
-        : -25,
+    size: 8 + Math.random() * 15,
 
-    size:
-      8 +
-      Math.random() * 15,
+    speed: 0.35 + Math.random() * 1.1,
 
-    speed:
-      .35 +
-      Math.random() * 1.1,
+    drift: (Math.random() - 0.5) * 0.45,
 
-    drift:
-      (Math.random()-.5) *
-      .45,
+    rot: Math.random() * 6.28,
 
-    rot:
-      Math.random() *
-      6.28,
+    spin: (Math.random() - 0.5) * 0.025,
 
-    spin:
-      (Math.random()-.5) *
-      .025,
+    alpha: 0.25 + Math.random() * 0.45,
 
-    alpha:
-      .25 +
-      Math.random() *
-      .45,
-
-    char:
-      chars[
-        Math.floor(
-          Math.random() *
-          chars.length
-        )
-      ]
-
+    char: chars[Math.floor(Math.random() * chars.length)],
   };
-
 }
 
+function drawFlowers() {
+  ctx.clearRect(0, 0, innerWidth, innerHeight);
 
-function drawFlowers(){
-
-  ctx.clearRect(
-    0,
-    0,
-    innerWidth,
-    innerHeight
-  );
-
-
-  flakes.forEach((f,i)=>{
-
+  flakes.forEach((f, i) => {
     f.y += f.speed;
 
-    f.x +=
-      f.drift +
-      Math.sin(
-        f.y*.008
-      )*.18;
+    f.x += f.drift + Math.sin(f.y * 0.008) * 0.18;
 
     f.rot += f.spin;
 
-
-    if(
-      f.y >
-      innerHeight + 25
-    ){
-
-      flakes[i] =
-        newFlake();
-
+    if (f.y > innerHeight + 25) {
+      flakes[i] = newFlake();
     }
-
 
     ctx.save();
 
-    ctx.translate(
-      f.x,
-      f.y
-    );
+    ctx.translate(f.x, f.y);
 
-    ctx.rotate(
-      f.rot
-    );
+    ctx.rotate(f.rot);
 
-    ctx.globalAlpha =
-      f.alpha;
+    ctx.globalAlpha = f.alpha;
 
-    ctx.fillStyle =
-      "#ef8bd8";
+    ctx.fillStyle = "#ef8bd8";
 
-    ctx.font =
-      `${f.size}px serif`;
+    ctx.font = `${f.size}px serif`;
 
-    ctx.fillText(
-      f.char,
-      -f.size/2,
-      f.size/2
-    );
+    ctx.fillText(f.char, -f.size / 2, f.size / 2);
 
     ctx.restore();
-
   });
 
-
-  requestAnimationFrame(
-    drawFlowers
-  );
-
+  requestAnimationFrame(drawFlowers);
 }
-
 
 resizeCanvas();
 
-addEventListener(
-  "resize",
-  resizeCanvas
-);
+addEventListener("resize", resizeCanvas);
 
 drawFlowers();
-
-
 
 /* =========================================
    FLOWER BURST
 ========================================= */
 
-function burstFlowers(count=20,small=false){
+function burstFlowers(count = 20, small = false) {
+  const particles = ["✿", "✽", "✾", "❀", "💗", "💕", "✨", "✦", "✧"];
 
-  const particles = [
-    "✿","✽","✾","❀",
-    "💗","💕","✨","✦","✧"
-  ];
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement("span");
 
-  for(let i=0;i<count;i++){
+    el.textContent = particles[Math.floor(Math.random() * particles.length)];
 
-    const el=document.createElement("span");
-
-    el.textContent =
-      particles[Math.floor(Math.random()*particles.length)];
-
-    el.style.position="fixed";
+    el.style.position = "fixed";
 
     /*
       Posisi ledakan sedikit lebih lebar
       supaya memenuhi layar
     */
-    el.style.left=(35+Math.random()*30)+"vw";
-    el.style.top=(42+Math.random()*16)+"vh";
+    el.style.left = 35 + Math.random() * 30 + "vw";
+    el.style.top = 42 + Math.random() * 16 + "vh";
 
-    el.style.zIndex="120";
-    el.style.pointerEvents="none";
+    el.style.zIndex = "120";
+    el.style.pointerEvents = "none";
 
-    el.style.fontSize=
-      (small ? 10 : 12) +
-      Math.random()*(small ? 14 : 25) +
-      "px";
+    el.style.fontSize =
+      (small ? 10 : 12) + Math.random() * (small ? 14 : 25) + "px";
 
-    el.style.color =
-      Math.random()>.5
-      ? "#ef8bd8"
-      : "#d7a7ff";
+    el.style.color = Math.random() > 0.5 ? "#ef8bd8" : "#d7a7ff";
 
     document.body.appendChild(el);
 
-    const angle=Math.random()*Math.PI*2;
+    const angle = Math.random() * Math.PI * 2;
 
     /*
       Jarak ledakan
     */
-    const distance =
-      (small ? 100 : 180) +
-      Math.random()*220;
+    const distance = (small ? 100 : 180) + Math.random() * 220;
 
-    const x=Math.cos(angle)*distance;
-    const y=Math.sin(angle)*distance;
+    const x = Math.cos(angle) * distance;
+    const y = Math.sin(angle) * distance;
 
-    const rotation =
-      Math.random()*720-360;
+    const rotation = Math.random() * 720 - 360;
 
-    const duration =
-      (small ? 700 : 1000) +
-      Math.random()*700;
+    const duration = (small ? 700 : 1000) + Math.random() * 700;
 
     el.animate(
       [
         {
-          transform:
-            "translate(-50%,-50%) scale(.1) rotate(0deg)",
-          opacity:0
+          transform: "translate(-50%,-50%) scale(.1) rotate(0deg)",
+          opacity: 0,
         },
 
         {
-          transform:
-            "translate(-50%,-50%) scale(1.4) rotate(180deg)",
-          opacity:1,
-          offset:.18
+          transform: "translate(-50%,-50%) scale(1.4) rotate(180deg)",
+          opacity: 1,
+          offset: 0.18,
         },
 
         {
-          transform:
-            `translate(
+          transform: `translate(
               calc(-50% + ${x}px),
               calc(-50% + ${y}px)
             )
             scale(1)
             rotate(${rotation}deg)`,
 
-          opacity:.9,
-          offset:.65
+          opacity: 0.9,
+          offset: 0.65,
         },
 
         {
-          transform:
-            `translate(
-              calc(-50% + ${x*1.25}px),
-              calc(-50% + ${y*1.25}px)
+          transform: `translate(
+              calc(-50% + ${x * 1.25}px),
+              calc(-50% + ${y * 1.25}px)
             )
             scale(.2)
-            rotate(${rotation+180}deg)`,
+            rotate(${rotation + 180}deg)`,
 
-          opacity:0
-        }
+          opacity: 0,
+        },
       ],
       {
-        duration:duration,
-        easing:"cubic-bezier(.15,.7,.25,1)"
-      }
-    ).onfinish=()=>el.remove();
+        duration: duration,
+        easing: "cubic-bezier(.15,.7,.25,1)",
+      },
+    ).onfinish = () => el.remove();
   }
 }
 
-function createGiftShockwave(){
+function createGiftShockwave() {
+  const wave = document.createElement("div");
 
-  const wave=document.createElement("div");
-
-  wave.className="gift-shockwave";
+  wave.className = "gift-shockwave";
 
   document.body.appendChild(wave);
 
-  requestAnimationFrame(()=>{
+  requestAnimationFrame(() => {
     wave.classList.add("active");
   });
 
-  setTimeout(()=>{
+  setTimeout(() => {
     wave.remove();
-  },1200);
+  }, 1200);
 }
 
 /* =================================
@@ -1191,48 +714,33 @@ const momentPlay = $("#momentPlay");
 const momentCard = document.querySelector(".moment-video-card");
 
 momentPlay.addEventListener("click", () => {
-
-  if(momentVideo.paused){
-
-    momentVideo.play().catch(()=>{});
+  if (momentVideo.paused) {
+    momentVideo.play().catch(() => {});
 
     momentCard.classList.add("playing");
-
-  }else{
-
+  } else {
     momentVideo.pause();
 
     momentCard.classList.remove("playing");
-
   }
-
 });
-
 
 /* Ketika video selesai */
 
 momentVideo.addEventListener("ended", () => {
-
   momentCard.classList.remove("playing");
-
 });
-
 
 /* Kalau video di-pause */
 
 momentVideo.addEventListener("pause", () => {
-
-  if(!momentVideo.ended){
+  if (!momentVideo.ended) {
     momentCard.classList.remove("playing");
   }
-
 });
-
 
 /* Kalau video dimainkan */
 
 momentVideo.addEventListener("play", () => {
-
   momentCard.classList.add("playing");
-
 });
