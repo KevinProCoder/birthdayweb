@@ -1567,3 +1567,217 @@ p {
   }
 
 }
+
+/* =================================
+   FLOATING FEBY HEAD
+================================= */
+
+.floating-head{
+  position:relative;
+  width:145px;
+  height:145px;
+  margin-bottom:28px;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  animation:
+    floatingHead 4s ease-in-out infinite;
+
+  z-index:2;
+}
+
+
+/* Foto */
+
+.floating-head img{
+  position:relative;
+  z-index:3;
+
+  width:115px;
+  height:115px;
+
+  object-fit:cover;
+
+  border-radius:50%;
+
+  border:3px solid rgba(245,138,214,.7);
+
+  box-shadow:
+    0 0 20px rgba(245,138,214,.45),
+    0 0 45px rgba(245,138,214,.25);
+
+  background:#241025;
+}
+
+
+/* Glow di belakang foto */
+
+.head-glow{
+  position:absolute;
+
+  width:115px;
+  height:115px;
+
+  border-radius:50%;
+
+  background:rgba(245,138,214,.35);
+
+  filter:blur(25px);
+
+  animation:
+    headGlow 3s ease-in-out infinite;
+
+  z-index:1;
+}
+
+
+/* Lingkaran dekorasi */
+
+.floating-head::before{
+  content:"";
+
+  position:absolute;
+
+  width:138px;
+  height:138px;
+
+  border-radius:50%;
+
+  border:1px solid rgba(245,138,214,.25);
+
+  animation:
+    rotateHeadRing 12s linear infinite;
+}
+
+
+/* Sparkle */
+
+.head-sparkle{
+  position:absolute;
+
+  color:#f6b9e8;
+
+  font-size:18px;
+
+  z-index:5;
+
+  text-shadow:
+    0 0 10px rgba(245,138,214,.8);
+
+  animation:
+    sparkleFloat 2s ease-in-out infinite;
+}
+
+.sparkle-1{
+  top:8px;
+  right:4px;
+  animation-delay:.2s;
+}
+
+.sparkle-2{
+  bottom:15px;
+  left:3px;
+  font-size:14px;
+  animation-delay:.8s;
+}
+
+.sparkle-3{
+  top:45px;
+  left:-5px;
+  font-size:13px;
+  animation-delay:1.3s;
+}
+
+
+/* Animasi naik turun */
+
+@keyframes floatingHead{
+
+  0%,100%{
+    transform:translateY(0) rotate(-1deg);
+  }
+
+  50%{
+    transform:translateY(-12px) rotate(1deg);
+  }
+
+}
+
+
+/* Glow berdenyut */
+
+@keyframes headGlow{
+
+  0%,100%{
+    transform:scale(.9);
+    opacity:.45;
+  }
+
+  50%{
+    transform:scale(1.15);
+    opacity:.8;
+  }
+
+}
+
+
+/* Ring berputar */
+
+@keyframes rotateHeadRing{
+
+  from{
+    transform:rotate(0deg);
+  }
+
+  to{
+    transform:rotate(360deg);
+  }
+
+}
+
+
+/* Sparkle bergerak */
+
+@keyframes sparkleFloat{
+
+  0%,100%{
+    transform:translateY(0) scale(1);
+    opacity:.5;
+  }
+
+  50%{
+    transform:translateY(-7px) scale(1.2);
+    opacity:1;
+  }
+
+}
+
+
+/* Mobile */
+
+@media(max-width:600px){
+
+  .floating-head{
+    width:120px;
+    height:120px;
+    margin-bottom:22px;
+  }
+
+  .floating-head img{
+    width:95px;
+    height:95px;
+  }
+
+  .head-glow{
+    width:95px;
+    height:95px;
+  }
+
+  .floating-head::before{
+    width:115px;
+    height:115px;
+  }
+
+}
