@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#16091d" />
+    <title>For You, Feby Larasaty 💗</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <canvas id="flowerCanvas" aria-hidden="true"></canvas>
+
+    <div class="ambient ambient-1"></div>
+    <div class="ambient ambient-2"></div>
+
+    <!-- Loading -->
+    <section id="loadingScreen" class="screen active">
+      <div class="loading-flower">🌸</div>
+
+      <p>Loading your surprise...</p>
+
+      <div class="loader-line">
+        <span></span>
+      </div>
+    </section>
+
+    <!-- PIN -->
+    <section id="pinScreen" class="screen hidden">
+      <div class="pin-card glass">
+        <div class="rose">🌹</div>
+
+        <p class="eyebrow">— A LITTLE SECRET —</p>
+
+        <h1>For You, Feby</h1>
+
+        <p class="muted">Enter the secret code.</p>
+
+        <div id="pinDots" class="pin-dots">
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+        </div>
+
+        <div id="pinDisplay" class="pin-display" aria-live="polite"></div>
+
+        <div class="keypad">
+          <button data-key="1">1</button>
+          <button data-key="2">2</button>
+          <button data-key="3">3</button>
+
+          <button data-key="4">4</button>
+          <button data-key="5">5</button>
+          <button data-key="6">6</button>
+
+          <button data-key="7">7</button>
+          <button data-key="8">8</button>
+          <button data-key="9">9</button>
+
+          <button data-key="clear">×</button>
+          <button data-key="0">0</button>
+          <button data-key="back">⌫</button>
+        </div>
+
+        <p class="hint">Hint: Hari Jadian Kitaa 💗</p>
+
+        <p id="pinError" class="error"></p>
+      </div>
+    </section>
+
+    <!-- Gift -->
+    <section id="giftScreen" class="screen hidden">
+      <div class="gift-wrap">
+        <p class="eyebrow">— A LITTLE GIFT —</p>
+
+        <h1>A Digital Bouquet for You</h1>
+
+        <p class="muted">Each flower holds a little message just for you.</p>
+
+        <button id="giftBox" class="gift-button" aria-label="Open gift">
+          <span class="gift-lid"></span>
+          <span class="gift-body"></span>
+          <span class="gift-ribbon-v"></span>
+          <span class="gift-ribbon-h"></span>
+          <span class="gift-bow">🎀</span>
+        </button>
+
+        <p class="tap-note">Tap the gift box to open it 🎁</p>
+      </div>
+    </section>
+
+    <!-- Birthday card -->
+    <div id="birthdayModal" class="modal hidden">
+      <div class="modal-backdrop"></div>
+
+      <div class="birthday-modal glass">
+        <div class="cake">🎂</div>
+
+        <p class="eyebrow">YOUR SPECIAL DAY</p>
+
+        <h2>Happy Birthday!</h2>
+
+        <p>The most special you 💗</p>
+
+        <button id="closeBirthday" class="pill-btn">Close ×</button>
+      </div>
+    </div>
+
+    <!-- Main -->
+    <main id="mainContent" class="hidden">
+      <button id="musicFab" class="music-fab" title="Music">♫</button>
+
+      <!-- HERO -->
+      <section class="hero section">
+        <p class="eyebrow">— YOUR VERY SPECIAL DAY —</p>
+
+        <h1>
+          HAPPY <span>BIRTHDAY</span><br />
+          FEBY LARASATY
+        </h1>
+
+        <p class="date-label">10 September</p>
+
+        <div class="line"></div>
+
+        <p class="today">Today · The most special day</p>
+
+        <p class="quote">
+          “Wishing you happiness, good health, and all your dreams come true.”
+          💗
+        </p>
+
+        <div class="scroll-cue">
+          scroll gently
+          <span>↓</span>
+        </div>
+      </section>
+
+      <!-- BOUQUET -->
+      <section class="section bouquet-section">
+        <p class="eyebrow">— A LITTLE BOUQUET —</p>
+
+        <h2>Digital Bouquet</h2>
+
+        <p class="muted">Pencet setiap bunga untuk mereveal pesannya 💕</p>
+
+        <div id="bouquet" class="bouquet">
+          <button
+            class="flower f1"
+            data-message="Semoga hari-harimu selalu punya alasan kecil untuk tersenyum. 🌸"
+          >
+            🌺
+          </button>
+
+          <button
+            class="flower f2"
+            data-message="Kamu pantas mendapatkan banyak hal baik dan momen yang indah. 🌷"
+          >
+            🌷
+          </button>
+
+          <button
+            class="flower f3"
+            data-message="Semoga langkahmu selalu ditemani keberanian dan orang-orang baik. 🌼"
+          >
+            🌼
+          </button>
+
+          <button
+            class="flower f4"
+            data-message="Jangan lupa, senyummu bisa membuat hari terasa jauh lebih cerah. 🌹"
+          >
+            🌹
+          </button>
+
+          <button
+            class="flower f5"
+            data-message="Semoga semua doa baik yang kamu simpan menemukan jalannya. 🌻"
+          >
+            🌻
+          </button>
+
+          <!-- Bunga ke-6 -->
+          <button
+            class="flower f6"
+            data-message="Semoga setiap impian yang kamu perjuangkan perlahan menemukan jalannya untuk menjadi nyata. 💐"
+          >
+            🌷
+          </button>
+
+          <!-- Bunga ke-7 -->
+          <button
+            class="flower f7"
+            data-message="Semoga kamu selalu dikelilingi orang-orang yang tulus menghargai dan menyayangimu. 🌸"
+          >
+            🌼
+          </button>
+
+          <!-- Bunga ke-8 -->
+          <button
+            class="flower f8"
+            data-message="Di hari spesialmu ini, semoga kebahagiaan selalu menemukan jalan untuk datang kepadamu. 🎂💗"
+          >
+            🌹
+          </button>
+
+          <span class="stem s1"></span>
+          <span class="stem s2"></span>
+          <span class="stem s3"></span>
+          <span class="stem s4"></span>
+          <span class="stem s5"></span>
+          <span class="stem s6"></span>
+          <span class="stem s7"></span>
+          <span class="stem s8"></span>
+        </div>
+
+        <div id="flowerMessage" class="flower-message glass hidden"></div>
+      </section>
+
+      <!-- LETTER -->
+      <section class="section letter-section">
+        <p class="eyebrow">— FROM MY HEART —</p>
+
+        <h2>A Letter For You</h2>
+
+        <div class="mini-flowers">✿ ❀ ✧ ❀ ✿</div>
+
+        <p class="today">Today</p>
+
+        <h3>Untuk seseorang yang paling manis dan paling cantik,</h3>
+
+        <div id="letter" class="letter">
+          <p>
+            <strong>My dearest Feby,</strong>
+          </p>
+
+          <p>
+            On this most special day, I want you to know that every single day
+            is a gift beyond measure. You bring light into ordinary moments and
+            make little things feel meaningful.
+          </p>
+
+          <p>
+            Your laughter is a beautiful reminder to enjoy the world with wonder
+            and kindness. The way you see things with warmth inspires everyone
+            around you to appreciate the little moments.
+          </p>
+
+          <p>
+            Thank you for being you — with all your uniqueness, gentleness, and
+            a spirit that keeps shining. You are one of the beautiful reasons to
+            be grateful today.
+          </p>
+
+          <p>
+            On this birthday of yours, I wish that your dreams come true, your
+            prayers are answered, and your happiness multiplies tenfold. You
+            deserve every beautiful thing this world has to offer.
+          </p>
+
+          <p class="signature">— with all my love and prayers 💕 —</p>
+        </div>
+      </section>
+
+      <!-- PHOTO MEMORIES -->
+      <section class="section memories-section">
+        <p class="eyebrow">— A COLLECTION OF MEMORIES —</p>
+
+        <h2>Our Photo Memories</h2>
+
+        <p class="muted">Tap to see it closer ✨</p>
+
+        <button id="photoCard" class="polaroid" aria-label="Open next memory">
+          <img
+            id="memoryImage"
+            src="assets/photos/photo-01.svg"
+            alt="Memory placeholder"
+          />
+
+          <span id="memoryCaption"> Memory 01 💗 </span>
+        </button>
+
+        <p class="photo-counter"><span id="photoNumber">1</span> / 10</p>
+      </section>
+      <!-- A LITTLE MOMENT VIDEO -->
+      <section class="section moment-section">
+        <p class="eyebrow">— A LITTLE MOMENT —</p>
+
+        <h2>A Moment for You</h2>
+
+        <p class="muted">Just a little moment I wanted you to keep. 💗</p>
+
+        <div class="moment-video-card">
+          <div class="video-wrapper">
+            <video
+              id="momentVideo"
+              preload="metadata"
+              playsinline
+              poster="assets/photos/photo-01.svg"
+            >
+              <source src="assets/videos/moment.mp4" type="video/mp4" />
+              Browser kamu tidak mendukung video.
+            </video>
+
+            <!-- Play button -->
+            <button
+              id="momentPlay"
+              class="moment-play"
+              aria-label="Play moment video"
+            >
+              ▶
+            </button>
+
+            <!-- Overlay -->
+            <div class="video-overlay"></div>
+          </div>
+
+          <div class="moment-info">
+            <span>✦ A LITTLE MEMORY ✦</span>
+
+            <h3>One Little Moment</h3>
+
+            <p>A small moment, but a memory worth keeping forever. 💕</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- TIMELINE -->
+      <section class="section timeline-section">
+        <p class="eyebrow">— OUR JOURNEY —</p>
+
+        <h2>Memories We've Written Together</h2>
+
+        <p class="muted">Every step, a story.</p>
+
+        <div class="timeline">
+          <article class="timeline-item">
+            <span>01</span>
+
+            <div>
+              <small> THE VERY BEGINNING </small>
+
+              <h3>✨ First Time We Met</h3>
+
+              <p>The day everything changed.</p>
+            </div>
+          </article>
+
+          <article class="timeline-item">
+            <span>02</span>
+
+            <div>
+              <small> A MAGICAL MOMENT </small>
+
+              <h3>💬 Our First Conversation</h3>
+
+              <p>The first words that started it all.</p>
+            </div>
+          </article>
+
+          <article class="timeline-item">
+            <span>03</span>
+
+            <div>
+              <small> A PRECIOUS MOMENT </small>
+
+              <h3>😂 Laughter That Never Ended</h3>
+
+              <p>The moment I knew this was special.</p>
+            </div>
+          </article>
+
+          <article class="timeline-item">
+            <span>04</span>
+
+            <div>
+              <small> ONE MORE MEMORY </small>
+
+              <h3>🌙 A Day to Remember</h3>
+
+              <p>A little chapter worth keeping forever.</p>
+            </div>
+          </article>
+
+          <article class="timeline-item">
+            <span>05</span>
+
+            <div>
+              <small> TODAY - 10 September </small>
+
+              <h3>🎂 YOUR SPECIAL DAY</h3>
+
+              <p>Celebrating you today and always 💗</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- PLAYLIST -->
+      <section class="section playlist-section">
+        <p class="eyebrow">— OUR SONGS —</p>
+
+        <h2>Special Playlist</h2>
+
+        <p class="muted">Songs that remind me of you.</p>
+
+        <div class="player glass">
+          <div id="albumArt" class="album-art">♫</div>
+
+          <h3 id="songTitle">Shape of My Heart</h3>
+
+          <p id="songArtist">Backstreet Boys</p>
+
+          <div class="progress">
+            <span id="progressBar"></span>
+          </div>
+
+          <div class="time-row">
+            <span id="currentTime">0:00</span>
+            <span id="duration">0:00</span>
+          </div>
+
+          <div class="player-controls">
+            <button id="prevSong">|◀</button>
+
+            <button id="playSong" class="play">▶</button>
+
+            <button id="nextSong">▶|</button>
+          </div>
+
+          <div id="songList" class="song-list"></div>
+        </div>
+
+        <audio id="audio"></audio>
+      </section>
+
+      <!-- GRATITUDE -->
+      <section class="section gratitude-section">
+        <p class="eyebrow">— FROM MY HEART TO YOURS —</p>
+
+        <h2>Reasons I'm Grateful for You</h2>
+
+        <p class="muted">Shake the jar and pick a note 🫙</p>
+
+        <button id="jar" class="jar" aria-label="Shake the gratitude jar">
+          <img
+            src="assets/photos/jar.png"
+            alt="Gratitude jar"
+            class="jar-image"
+          />
+        </button>
+
+        <p id="jarStatus" class="jar-status">Kocok Toples</p>
+
+        <div id="note" class="note glass hidden">
+          <small id="noteNumber">#1</small>
+          <p id="noteText"></p>
+          <span>💗</span>
+        </div>
+      </section>
+
+      <!-- CLOSING -->
+      <section class="section closing-section">
+        <p class="eyebrow">✿ WITH ALL MY HEART ✿</p>
+
+        <h2>
+          May your life always be<br />
+          <em>filled with flowers</em>
+        </h2>
+
+        <p>
+          Happy birthday, Feby. Semoga tahun ini membawa hari-hari yang bahagia,
+          orang-orang yang tulus, dan begitu banyak alasan untuk tersenyum.
+          Semoga do'a-do'a mu dikabulkan pada waktu terbaik dan semoga hatimu
+          selalu dikelilingi cinta, kedamaian, dan kebahagiaan. aamiin.
+        </p>
+
+        <p class="closing-signature">— with all my love and prayers 💕 —</p>
+
+        <div class="final-flowers">🌸 🌷 🌼 🌺 🌸</div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
