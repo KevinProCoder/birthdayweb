@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Feby Larasaty — Birthday Website
 
 Website birthday interaktif bergaya dark pink/purple seperti referensi yang diberikan.
@@ -56,3 +57,6 @@ Edit array `CONFIG.gratitude` di `script.js`.
 - Animated closing section
 - Responsive mobile
 - prefers-reduced-motion support
+=======
+# birthdayweb
+>>>>>>> 29f2a5f72c4fce48692aa0d7824de85e821e7648
