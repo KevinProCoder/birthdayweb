@@ -434,12 +434,9 @@ function changeMemoryPhoto(polaroid, groupIndex) {
 
   image.src = album.photos[memoryIndexes[groupIndex]];
 
-  const number =
-    memoryItems[groupIndex].querySelector(".memory-number span");
+  const number = memoryItems[groupIndex].querySelector(".memory-number span");
 
-  number.textContent = String(
-    memoryIndexes[groupIndex] + 1
-  ).padStart(2, "0");
+  number.textContent = String(memoryIndexes[groupIndex] + 1).padStart(2, "0");
 
   polaroid.classList.remove("photo-changing");
   void polaroid.offsetWidth;
@@ -922,52 +919,62 @@ function createGiftShockwave() {
 ===================================================== */
 
 const momentVideo = $("#momentVideo");
-
 const momentPlay = $("#momentPlay");
+const momentCard = $(".moment-video-card");
 
-const momentCard = document.querySelector(".moment-video-card");
+if (momentVideo && momentPlay && momentCard && audio) {
 
-/*
-Pastikan video memang ada
-sebelum memasang event.
-*/
-
-if (momentVideo && momentPlay && momentCard) {
   momentPlay.addEventListener("click", () => {
+
     if (momentVideo.paused) {
-      momentVideo.play().catch(() => {});
+      // Pause musik ketika video mulai
+      if (!audio.paused) {
+        audio.pause();
+      }
 
-      momentCard.classList.add("playing");
+      momentVideo.play();
+
     } else {
+      // Pause video
       momentVideo.pause();
-
-      momentCard.classList.remove("playing");
     }
+
   });
 
-  /*
-  Ketika video selesai
-  */
-
-  momentVideo.addEventListener("ended", () => {
-    momentCard.classList.remove("playing");
-  });
-
-  /*
-  Ketika video di-pause
-  */
-
-  momentVideo.addEventListener("pause", () => {
-    if (!momentVideo.ended) {
-      momentCard.classList.remove("playing");
-    }
-  });
-
-  /*
-  Ketika video dimainkan
-  */
-
+  // Ketika video mulai dimainkan
   momentVideo.addEventListener("play", () => {
-    momentCard.classList.add("playing");
+
+    // Pastikan musik berhenti
+    if (!audio.paused) {
+      audio.pause();
+    }
+
+    momentPlay.textContent = "❚❚";
+    momentCard.classList.add("video-playing");
+
   });
+
+  // Ketika video di-pause
+  momentVideo.addEventListener("pause", () => {
+
+    momentPlay.textContent = "▶";
+    momentCard.classList.remove("video-playing");
+
+  });
+
+  // Ketika video selesai
+  momentVideo.addEventListener("ended", () => {
+
+    momentPlay.textContent = "▶";
+    momentCard.classList.remove("video-playing");
+
+    // Lanjutkan musik dari posisi terakhir
+    if (audioStarted) {
+      audio.play().catch(() => {
+        console.log("Browser memblokir autoplay audio.");
+      });
+    }
+
+  });
+
 }
