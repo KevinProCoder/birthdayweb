@@ -116,7 +116,15 @@ const CONFIG = {
       artist: "Nuca",
       src: "assets/music/song-06.mp3",
     },
+
+    {
+      title: "Kita Lewati Berdua",
+      artist: "Overnight",
+      src: "assets/music/song-07.mp3",
+    },
   ],
+
+  
 
   /*
   =====================================================
