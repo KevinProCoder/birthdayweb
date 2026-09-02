@@ -292,33 +292,15 @@ $("#giftBox").addEventListener("click", () => {
     masuk ke halaman utama.
     */
 
-  setTimeout(() => {
-    $("#giftScreen").classList.add("hidden");
+  setTimeout(()=>{
+  $("#giftScreen").classList.add("hidden");
+  $("#mainContent").classList.remove("hidden");
+  document.body.classList.add("unlocked");
 
-    $("#mainContent").classList.remove("hidden");
+  observeReveals();
+  selectSong(0,true);
 
-    document.body.classList.add("unlocked");
-
-    /*
-      Aktifkan scroll reveal
-      */
-
-    observeReveals();
-
-    /*
-      Putar lagu pertama
-      */
-
-    selectSong(0, true);
-
-    /*
-      Birthday modal
-      */
-
-    setTimeout(() => {
-      $("#birthdayModal").classList.remove("hidden");
-    }, CONFIG.popupDelayMs);
-  }, 1500);
+},1500);
 });
 
 /* =====================================================
@@ -978,3 +960,25 @@ if (momentVideo && momentPlay && momentCard && audio) {
   });
 
 }
+
+let birthdayPopupShown = false;
+
+window.addEventListener("scroll", () => {
+
+  if (birthdayPopupShown) return;
+
+  const scrollPosition = window.innerHeight + window.scrollY;
+  const pageHeight = document.documentElement.scrollHeight;
+
+  // Jarak toleransi 20px agar tetap terdeteksi
+  if (scrollPosition >= pageHeight - 20) {
+
+    birthdayPopupShown = true;
+
+    setTimeout(() => {
+      $("#birthdayModal").classList.remove("hidden");
+    }, 500);
+
+  }
+
+});
