@@ -6,15 +6,79 @@ const CONFIG = {
 
   popupDelayMs: 3500,
 
-  photos: Array.from(
-    { length: 50 },
-    (_, i) => `assets/photos/photo-${String(i + 1).padStart(2, "0")}.jpg`,
-  ),
+  /*
+  =====================================================
+  PHOTO MEMORIES
 
-  captions: Array.from(
-    { length: 10 },
-    (_, i) => `Memory ${String(i + 1).padStart(2, "0")} 💗`,
-  ),
+  POLAROID 1 = PHOTO 01 - 10
+  POLAROID 2 = PHOTO 11 - 20
+  POLAROID 3 = PHOTO 21 - 30
+  POLAROID 4 = PHOTO 31 - 40
+  POLAROID 5 = PHOTO 41 - 50
+  =====================================================
+  */
+
+  albums: [
+    {
+      title: "Our Little Moments",
+      cover: "assets/photos/photo-1.jpg",
+      photos: Array.from(
+        { length: 10 },
+        (_, i) => `assets/photos/photo-${i + 1}.jpg`,
+      ),
+    },
+
+    {
+      title: "Beautiful Memories",
+      cover: "assets/photos/photo-11.jpg",
+      photos: Array.from(
+        { length: 10 },
+        (_, i) => `assets/photos/photo-${i + 11}.jpg`,
+      ),
+    },
+
+    {
+      title: "Moments Together",
+      cover: "assets/photos/photo-21.jpg",
+      photos: Array.from(
+        { length: 10 },
+        (_, i) => `assets/photos/photo-${i + 21}.jpg`,
+      ),
+    },
+
+    {
+      title: "Sweet Memories",
+      cover: "assets/photos/photo-31.jpg",
+      photos: Array.from(
+        { length: 10 },
+        (_, i) => `assets/photos/photo-${i + 31}.jpg`,
+      ),
+    },
+
+    {
+      title: "Forever Memories",
+      cover: "assets/photos/photo-41.jpg",
+      photos: Array.from(
+        { length: 10 },
+        (_, i) => `assets/photos/photo-${i + 41}.jpg`,
+      ),
+    },
+
+    {
+      title: "Another Beautiful Chapter",
+      cover: "assets/photos/photo-51.jpg",
+      photos: Array.from(
+        { length: 10 },
+        (_, i) => `assets/photos/photo-${i + 51}.jpg`,
+      ),
+    },
+  ],
+
+  /*
+  =====================================================
+  SONGS
+  =====================================================
+  */
 
   songs: [
     {
@@ -54,6 +118,12 @@ const CONFIG = {
     },
   ],
 
+  /*
+  =====================================================
+  GRATITUDE
+  =====================================================
+  */
+
   gratitude: [
     "Kamu selalu bisa membuat hari yang biasa terasa sedikit lebih ringan.",
 
@@ -67,13 +137,19 @@ const CONFIG = {
   ],
 };
 
+/* =====================================================
+   HELPER
+===================================================== */
+
 const $ = (s) => document.querySelector(s);
 
 const $$ = (s) => [...document.querySelectorAll(s)];
 
-let pin = "";
+/* =====================================================
+   GLOBAL VARIABLES
+===================================================== */
 
-let photoIndex = 0;
+let pin = "";
 
 let noteIndex = 0;
 
@@ -81,9 +157,29 @@ let songIndex = 0;
 
 let audioStarted = false;
 
-/* =========================================
+/*
+=====================================================
+PHOTO MEMORY INDEX
+
+Setiap polaroid punya index sendiri.
+
+[0,0,0,0,0]
+
+Artinya:
+
+Polaroid 1 = foto 01
+Polaroid 2 = foto 11
+Polaroid 3 = foto 21
+Polaroid 4 = foto 31
+Polaroid 5 = foto 41
+=====================================================
+*/
+
+const memoryIndexes = [0, 0, 0, 0, 0, 0];
+
+/* =====================================================
    LOADING
-========================================= */
+===================================================== */
 
 window.addEventListener("load", () => {
   setTimeout(() => {
@@ -93,23 +189,28 @@ window.addEventListener("load", () => {
   }, CONFIG.loadingMs);
 });
 
-/* =========================================
+/* =====================================================
    PIN
-========================================= */
+===================================================== */
 
 function updatePin() {
-  $$("#pinDots i").forEach((dot, i) =>
-    dot.classList.toggle("filled", i < pin.length),
-  );
+  $$("#pinDots i").forEach((dot, i) => {
+    dot.classList.toggle("filled", i < pin.length);
+  });
 
   $("#pinDisplay").textContent = pin ? "•".repeat(pin.length) : "";
 }
 
 function enterMain() {
   $("#pinScreen").classList.add("hidden");
+
   $("#giftScreen").classList.remove("hidden");
 
-  // Siapkan lagu pertama
+  /*
+  Siapkan lagu pertama
+  tetapi belum dimainkan.
+  */
+
   selectSong(0, false);
 }
 
@@ -143,36 +244,54 @@ $$(".keypad button").forEach((btn) => {
   });
 });
 
-/* =========================================
+/* =====================================================
    GIFT
-========================================= */
+===================================================== */
 
 $("#giftBox").addEventListener("click", () => {
-  // Cegah gift diklik berkali-kali
-  if ($("#giftBox").classList.contains("opening")) return;
+  /*
+    Cegah gift diklik berkali-kali
+    */
+
+  if ($("#giftBox").classList.contains("opening")) {
+    return;
+  }
 
   $("#giftBox").classList.add("opening");
 
-  // Ledakan pertama
+  /*
+    Ledakan pertama
+    */
+
   burstFlowers(70);
 
-  // Gelombang cahaya
+  /*
+    Gelombang cahaya
+    */
+
   createGiftShockwave();
 
-  // Ledakan kedua sedikit terlambat
+  /*
+    Ledakan kedua
+    */
+
   setTimeout(() => {
     burstFlowers(35);
   }, 250);
 
-  // Ledakan ketiga
+  /*
+    Ledakan ketiga
+    */
+
   setTimeout(() => {
     burstFlowers(25);
   }, 500);
 
   /*
     Setelah animasi selesai,
-    pindah ke halaman utama
-  */
+    masuk ke halaman utama.
+    */
+
   setTimeout(() => {
     $("#giftScreen").classList.add("hidden");
 
@@ -180,10 +299,21 @@ $("#giftBox").addEventListener("click", () => {
 
     document.body.classList.add("unlocked");
 
+    /*
+      Aktifkan scroll reveal
+      */
+
     observeReveals();
 
-    // 🎵 Putar lagu pertama
+    /*
+      Putar lagu pertama
+      */
+
     selectSong(0, true);
+
+    /*
+      Birthday modal
+      */
 
     setTimeout(() => {
       $("#birthdayModal").classList.remove("hidden");
@@ -191,25 +321,25 @@ $("#giftBox").addEventListener("click", () => {
   }, 1500);
 });
 
-/* =========================================
+/* =====================================================
    BIRTHDAY MODAL
-========================================= */
+===================================================== */
 
-$("#closeBirthday").addEventListener("click", () =>
-  $("#birthdayModal").classList.add("hidden"),
-);
+$("#closeBirthday").addEventListener("click", () => {
+  $("#birthdayModal").classList.add("hidden");
+});
 
-$("#birthdayModal .modal-backdrop").addEventListener("click", () =>
-  $("#birthdayModal").classList.add("hidden"),
-);
+$("#birthdayModal .modal-backdrop").addEventListener("click", () => {
+  $("#birthdayModal").classList.add("hidden");
+});
 
-/* =========================================
+/* =====================================================
    FLOWERS
-========================================= */
+===================================================== */
 
-$$(".flower").forEach((f) => {
-  f.addEventListener("click", () => {
-    $("#flowerMessage").textContent = f.dataset.message;
+$$(".flower").forEach((flower) => {
+  flower.addEventListener("click", () => {
+    $("#flowerMessage").textContent = flower.dataset.message;
 
     $("#flowerMessage").classList.remove("hidden");
 
@@ -217,28 +347,24 @@ $$(".flower").forEach((f) => {
   });
 });
 
-/* =========================================
+/* =====================================================
    LETTER TYPING
-========================================= */
-
-const letterText = [...$("#letter").children].map((p) => p.textContent);
+===================================================== */
 
 let typed = false;
 
 const letterObserver = new IntersectionObserver(
   (entries) => {
-    if (entries.some((e) => e.isIntersecting) && !typed) {
+    if (entries.some((entry) => entry.isIntersecting) && !typed) {
       typed = true;
 
       const target = $("#letter");
 
-      const original = [...target.children].map((x) => x.outerHTML);
+      const original = [...target.children].map((element) => element.outerHTML);
 
       target.innerHTML = "";
 
-      let delay = 0;
-
-      original.forEach((html, i) => {
+      original.forEach((html) => {
         const wrap = document.createElement("div");
 
         wrap.innerHTML = html;
@@ -263,11 +389,11 @@ const letterObserver = new IntersectionObserver(
 
 letterObserver.observe($("#letter"));
 
-function typeText(el, text, speed) {
+function typeText(element, text, speed) {
   let i = 0;
 
   const timer = setInterval(() => {
-    el.textContent = text.slice(0, ++i);
+    element.textContent = text.slice(0, ++i);
 
     if (i >= text.length) {
       clearInterval(timer);
@@ -275,249 +401,107 @@ function typeText(el, text, speed) {
   }, speed);
 }
 
-/* =========================
-   PHOTO GALLERY
-========================= */
+/* =====================================================
+   OUR PHOTO MEMORIES
+===================================================== */
 
-const photoGallery = $("#photoGallery");
-const photoLightbox = $("#photoLightbox");
-const lightboxImage = $("#lightboxImage");
-const lightboxCaption = $("#lightboxCaption");
-const lightboxCounter = $("#lightboxCounter");
+/*
+=====================================================
+Ambil semua 5 polaroid
+dari HTML.
+=====================================================
+*/
 
-let currentPhoto = 0;
+const memoryPolaroids = $$(".memory-polaroid");
 
+const memoryItems = $$(".memory-item");
 
-/* CREATE 50 POLAROIDS */
+/*
+=====================================================
+FUNGSI GANTI FOTO
+=====================================================
+*/
 
-function renderPhotoGallery(){
+function changeMemoryPhoto(polaroid, groupIndex) {
+  memoryIndexes[groupIndex]++;
 
-  photoGallery.innerHTML = "";
+  if (memoryIndexes[groupIndex] >= 10) {
+    memoryIndexes[groupIndex] = 0;
+  }
 
-  CONFIG.photos.forEach((photo,index)=>{
+  const album = CONFIG.albums[groupIndex];
+  const image = polaroid.querySelector(".memory-image");
 
-    const polaroid = document.createElement("button");
+  image.src = album.photos[memoryIndexes[groupIndex]];
 
-    polaroid.className = "gallery-polaroid";
+  const number =
+    memoryItems[groupIndex].querySelector(".memory-number span");
 
-    /*
-      5 kolom:
-      index 0-4   = baris 1
-      index 5-9   = baris 2
-      index 10-14 = baris 3
-      dst...
-    */
-    const row = Math.floor(index / 5);
-    const column = index % 5;
+  number.textContent = String(
+    memoryIndexes[groupIndex] + 1
+  ).padStart(2, "0");
 
-    polaroid.style.setProperty(
-      "--rotate",
-      `${(Math.random() * 10 - 5).toFixed(2)}deg`
-    );
+  polaroid.classList.remove("photo-changing");
+  void polaroid.offsetWidth;
+  polaroid.classList.add("photo-changing");
+}
 
-    polaroid.style.setProperty(
-      "--x",
-      `${(Math.random() * 24 - 12).toFixed(0)}px`
-    );
+/*
+=====================================================
+EVENT CLICK UNTUK 5 POLAROID
+=====================================================
+*/
 
-    polaroid.style.setProperty(
-      "--y",
-      `${(Math.random() * 24 - 12).toFixed(0)}px`
-    );
-
-    /*
-      Delay berdasarkan BARIS.
-      Jadi satu baris muncul bersamaan,
-      kemudian baru baris berikutnya.
-    */
-    polaroid.style.setProperty(
-      "--row-delay",
-      `${row * 0.28}s`
-    );
-
-    /*
-      Sedikit perbedaan antar foto
-      dalam baris yang sama.
-    */
-    polaroid.style.setProperty(
-      "--column-delay",
-      `${column * 0.06}s`
-    );
-
-    polaroid.innerHTML = `
-      <img 
-        src="${photo}" 
-        alt="Memory ${String(index + 1).padStart(2,"0")}"
-        loading="lazy"
-      >
-
-      <span>
-        ${String(index + 1).padStart(2,"0")}
-      </span>
-    `;
-
-    polaroid.addEventListener("click",()=>{
-
-      currentPhoto = index;
-
-      openPhoto(currentPhoto);
-
-    });
-
-    photoGallery.appendChild(polaroid);
-
+memoryPolaroids.forEach((polaroid, groupIndex) => {
+  polaroid.addEventListener("click", () => {
+    changeMemoryPhoto(polaroid, groupIndex);
   });
+});
 
+/* =====================================================
+   MEMORY SCROLL REVEAL
+===================================================== */
+
+/*
+Polaroid hanya dianimasikan
+ketika bagian gallery muncul.
+*/
+
+const memorySection = document.querySelector(".memories-section");
+
+let memoryAnimated = false;
+
+if (memorySection) {
+  const memoryObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !memoryAnimated) {
+          memoryAnimated = true;
+
+          /*
+              Tambahkan class
+              untuk menjalankan
+              animasi 5 polaroid.
+              */
+
+          memorySection.classList.add("memories-visible");
+
+          memoryObserver.unobserve(memorySection);
+        }
+      });
+    },
+
+    {
+      threshold: 0.15,
+    },
+  );
+
+  memoryObserver.observe(memorySection);
 }
 
-
-/* OPEN LIGHTBOX */
-
-function openPhoto(index){
-
-  currentPhoto = index;
-
-  lightboxImage.src = CONFIG.photos[index];
-
-  lightboxImage.alt =
-    `Memory ${String(index + 1).padStart(2,"0")}`;
-
-  lightboxCounter.textContent =
-    `${String(index + 1).padStart(2,"0")} / ${CONFIG.photos.length}`;
-
-  lightboxCaption.textContent =
-    `Memory ${String(index + 1).padStart(2,"0")} 💗`;
-
-  photoLightbox.classList.remove("hidden");
-
-  document.body.style.overflow = "hidden";
-
-}
-
-
-/* CLOSE */
-
-function closePhoto(){
-
-  photoLightbox.classList.add("hidden");
-
-  document.body.style.overflow = "";
-
-}
-
-$("#closePhoto").addEventListener("click",closePhoto);
-
-
-/* NEXT */
-
-$("#nextPhoto").addEventListener("click",()=>{
-
-  currentPhoto =
-    (currentPhoto + 1) % CONFIG.photos.length;
-
-  openPhoto(currentPhoto);
-
-});
-
-
-/* PREVIOUS */
-
-$("#prevPhoto").addEventListener("click",()=>{
-
-  currentPhoto =
-    (currentPhoto - 1 + CONFIG.photos.length)
-    % CONFIG.photos.length;
-
-  openPhoto(currentPhoto);
-
-});
-
-
-/* CLICK BACKGROUND TO CLOSE */
-
-photoLightbox.addEventListener("click",(e)=>{
-
-  if(e.target === photoLightbox){
-
-    closePhoto();
-
-  }
-
-});
-
-
-/* KEYBOARD */
-
-document.addEventListener("keydown",(e)=>{
-
-  if(photoLightbox.classList.contains("hidden")) return;
-
-  if(e.key === "Escape"){
-
-    closePhoto();
-
-  }
-
-  if(e.key === "ArrowRight"){
-
-    currentPhoto =
-      (currentPhoto + 1) % CONFIG.photos.length;
-
-    openPhoto(currentPhoto);
-
-  }
-
-  if(e.key === "ArrowLeft"){
-
-    currentPhoto =
-      (currentPhoto - 1 + CONFIG.photos.length)
-      % CONFIG.photos.length;
-
-    openPhoto(currentPhoto);
-
-  }
-
-});
-
-
-/* START GALLERY */
-
-renderPhotoGallery();
-
-/* =========================
-   GALLERY SCROLL ANIMATION
-========================= */
-
-let galleryAnimated = false;
-
-const galleryObserver = new IntersectionObserver(
-  (entries) => {
-
-    entries.forEach(entry => {
-
-      if(entry.isIntersecting && !galleryAnimated){
-
-        galleryAnimated = true;
-
-        photoGallery.classList.add("gallery-visible");
-
-        galleryObserver.unobserve(photoGallery);
-
-      }
-
-    });
-
-  },
-  {
-    threshold:0.15
-  }
-);
-
-galleryObserver.observe(photoGallery);
-
-/* =========================================
+/* =====================================================
    AUDIO PLAYER
-========================================= */
+===================================================== */
 
 const audio = $("#audio");
 
@@ -568,15 +552,21 @@ $("#playSong").onclick = () => {
   }
 };
 
-$("#nextSong").onclick = () =>
+$("#nextSong").onclick = () => {
   selectSong((songIndex + 1) % CONFIG.songs.length, true);
+};
 
-$("#prevSong").onclick = () =>
+$("#prevSong").onclick = () => {
   selectSong((songIndex - 1 + CONFIG.songs.length) % CONFIG.songs.length, true);
+};
 
-audio.addEventListener("play", () => ($("#playSong").textContent = "Ⅱ"));
+audio.addEventListener("play", () => {
+  $("#playSong").textContent = "Ⅱ";
+});
 
-audio.addEventListener("pause", () => ($("#playSong").textContent = "▶"));
+audio.addEventListener("pause", () => {
+  $("#playSong").textContent = "▶";
+});
 
 audio.addEventListener("timeupdate", () => {
   const pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
@@ -588,10 +578,14 @@ audio.addEventListener("timeupdate", () => {
   $("#duration").textContent = formatTime(audio.duration);
 });
 
-audio.addEventListener("ended", () => $("#nextSong").click());
+audio.addEventListener("ended", () => {
+  $("#nextSong").click();
+});
 
 function formatTime(sec) {
-  if (!Number.isFinite(sec)) return "0:00";
+  if (!Number.isFinite(sec)) {
+    return "0:00";
+  }
 
   return `${Math.floor(sec / 60)}:${String(Math.floor(sec % 60)).padStart(
     2,
@@ -599,9 +593,9 @@ function formatTime(sec) {
   )}`;
 }
 
-/* =========================================
+/* =====================================================
    GRATITUDE JAR
-========================================= */
+===================================================== */
 
 $("#jar").addEventListener("click", () => {
   $("#jar").classList.remove("shake");
@@ -623,9 +617,9 @@ $("#jar").addEventListener("click", () => {
   }, 520);
 });
 
-/* =========================================
+/* =====================================================
    MUSIC FLOATING BUTTON
-========================================= */
+===================================================== */
 
 $("#musicFab").addEventListener("click", () => {
   document.querySelector(".playlist-section").scrollIntoView({
@@ -633,17 +627,15 @@ $("#musicFab").addEventListener("click", () => {
   });
 });
 
-/* =========================================================
+/* =====================================================
    SCROLL REVEAL
-   ========================================================= */
+===================================================== */
 
 function observeReveals() {
   /*
-    ------------------------------------------
-    BAGIAN 1
-    ------------------------------------------
-    Reveal untuk setiap section seperti
-    sistem yang sebelumnya sudah kamu punya.
+  =====================================================
+  SECTION REVEAL
+  =====================================================
   */
 
   $$(".section").forEach((section) => {
@@ -655,10 +647,9 @@ function observeReveals() {
   });
 
   /*
-    ------------------------------------------
-    BAGIAN 2
-    ------------------------------------------
-    Observer untuk section.
+  =====================================================
+  SECTION OBSERVER
+  =====================================================
   */
 
   const sectionObserver = new IntersectionObserver(
@@ -675,21 +666,17 @@ function observeReveals() {
     },
   );
 
-  $$(".reveal").forEach((element) => sectionObserver.observe(element));
+  $$(".reveal").forEach((element) => {
+    sectionObserver.observe(element);
+  });
 
   /*
-    =====================================================
-    BAGIAN 3
-    =====================================================
-    TIMELINE ITEM SATU PER SATU
-    =====================================================
+  =====================================================
+  TIMELINE
+  =====================================================
   */
 
   const timelineItems = $$(".timeline-item");
-
-  /*
-    Observer khusus timeline.
-  */
 
   const timelineObserver = new IntersectionObserver(
     (entries) => {
@@ -697,47 +684,26 @@ function observeReveals() {
         if (entry.isIntersecting) {
           entry.target.classList.add("visible");
 
-          /*
-              Setelah tampil, observer
-              tidak perlu mengawasi item
-              tersebut lagi.
-
-              Jadi animasi tidak akan
-              berulang ketika scroll naik/turun.
-            */
-
           timelineObserver.unobserve(entry.target);
         }
       });
     },
 
     {
-      /*
-          Item mulai muncul ketika
-          sekitar 12% bagiannya terlihat.
-        */
-
       threshold: 0.12,
-
-      /*
-          Membuat trigger sedikit lebih
-          natural ketika scrolling.
-        */
 
       rootMargin: "0px 0px -40px 0px",
     },
   );
 
-  /*
-    Mulai mengawasi setiap timeline item.
-  */
-
-  timelineItems.forEach((item) => timelineObserver.observe(item));
+  timelineItems.forEach((item) => {
+    timelineObserver.observe(item);
+  });
 }
 
-/* =========================================
+/* =====================================================
    FLOWER RAIN CANVAS
-========================================= */
+===================================================== */
 
 const canvas = $("#flowerCanvas");
 
@@ -760,9 +726,18 @@ function resizeCanvas() {
 
   ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
 
+  /*
+  Jumlah bunga tetap ringan.
+  */
+
   const count = Math.min(55, Math.max(20, Math.floor(innerWidth / 8)));
 
-  flakes = Array.from({ length: count }, () => newFlake(true));
+  flakes = Array.from(
+    {
+      length: count,
+    },
+    () => newFlake(true),
+  );
 }
 
 function newFlake(initial = false) {
@@ -827,9 +802,9 @@ addEventListener("resize", resizeCanvas);
 
 drawFlowers();
 
-/* =========================================
+/* =====================================================
    FLOWER BURST
-========================================= */
+===================================================== */
 
 function burstFlowers(count = 20, small = false) {
   const particles = ["✿", "✽", "✾", "❀", "💗", "💕", "✨", "✦", "✧"];
@@ -842,13 +817,15 @@ function burstFlowers(count = 20, small = false) {
     el.style.position = "fixed";
 
     /*
-      Posisi ledakan sedikit lebih lebar
-      supaya memenuhi layar
+    Posisi awal ledakan
     */
+
     el.style.left = 35 + Math.random() * 30 + "vw";
+
     el.style.top = 42 + Math.random() * 16 + "vh";
 
     el.style.zIndex = "120";
+
     el.style.pointerEvents = "none";
 
     el.style.fontSize =
@@ -860,12 +837,10 @@ function burstFlowers(count = 20, small = false) {
 
     const angle = Math.random() * Math.PI * 2;
 
-    /*
-      Jarak ledakan
-    */
     const distance = (small ? 100 : 180) + Math.random() * 220;
 
     const x = Math.cos(angle) * distance;
+
     const y = Math.sin(angle) * distance;
 
     const rotation = Math.random() * 720 - 360;
@@ -876,12 +851,15 @@ function burstFlowers(count = 20, small = false) {
       [
         {
           transform: "translate(-50%,-50%) scale(.1) rotate(0deg)",
+
           opacity: 0,
         },
 
         {
           transform: "translate(-50%,-50%) scale(1.4) rotate(180deg)",
+
           opacity: 1,
+
           offset: 0.18,
         },
 
@@ -894,6 +872,7 @@ function burstFlowers(count = 20, small = false) {
             rotate(${rotation}deg)`,
 
           opacity: 0.9,
+
           offset: 0.65,
         },
 
@@ -908,13 +887,19 @@ function burstFlowers(count = 20, small = false) {
           opacity: 0,
         },
       ],
+
       {
         duration: duration,
+
         easing: "cubic-bezier(.15,.7,.25,1)",
       },
     ).onfinish = () => el.remove();
   }
 }
+
+/* =====================================================
+   GIFT SHOCKWAVE
+===================================================== */
 
 function createGiftShockwave() {
   const wave = document.createElement("div");
@@ -932,42 +917,57 @@ function createGiftShockwave() {
   }, 1200);
 }
 
-/* =================================
+/* =====================================================
    A MOMENT FOR YOU - VIDEO
-================================= */
+===================================================== */
 
 const momentVideo = $("#momentVideo");
+
 const momentPlay = $("#momentPlay");
+
 const momentCard = document.querySelector(".moment-video-card");
 
-momentPlay.addEventListener("click", () => {
-  if (momentVideo.paused) {
-    momentVideo.play().catch(() => {});
+/*
+Pastikan video memang ada
+sebelum memasang event.
+*/
 
+if (momentVideo && momentPlay && momentCard) {
+  momentPlay.addEventListener("click", () => {
+    if (momentVideo.paused) {
+      momentVideo.play().catch(() => {});
+
+      momentCard.classList.add("playing");
+    } else {
+      momentVideo.pause();
+
+      momentCard.classList.remove("playing");
+    }
+  });
+
+  /*
+  Ketika video selesai
+  */
+
+  momentVideo.addEventListener("ended", () => {
+    momentCard.classList.remove("playing");
+  });
+
+  /*
+  Ketika video di-pause
+  */
+
+  momentVideo.addEventListener("pause", () => {
+    if (!momentVideo.ended) {
+      momentCard.classList.remove("playing");
+    }
+  });
+
+  /*
+  Ketika video dimainkan
+  */
+
+  momentVideo.addEventListener("play", () => {
     momentCard.classList.add("playing");
-  } else {
-    momentVideo.pause();
-
-    momentCard.classList.remove("playing");
-  }
-});
-
-/* Ketika video selesai */
-
-momentVideo.addEventListener("ended", () => {
-  momentCard.classList.remove("playing");
-});
-
-/* Kalau video di-pause */
-
-momentVideo.addEventListener("pause", () => {
-  if (!momentVideo.ended) {
-    momentCard.classList.remove("playing");
-  }
-});
-
-/* Kalau video dimainkan */
-
-momentVideo.addEventListener("play", () => {
-  momentCard.classList.add("playing");
-});
+  });
+}

@@ -288,90 +288,129 @@
       <!-- PHOTO MEMORIES -->
       <section class="section memories-section">
         <p class="eyebrow">— A COLLECTION OF MEMORIES —</p>
+
         <h2>Our Photo Memories</h2>
-        <p class="muted">
-          A collection of little moments worth remembering. 💗
-        </p>
 
-        <div id="photoGallery" class="photo-gallery">
-          <!-- Foto akan dibuat otomatis oleh JavaScript -->
-        </div>
+        <p class="muted">Every picture holds a little story. 💗</p>
 
-        <p class="photo-counter"><span id="photoNumber">50</span> memories</p>
-      </section>
-
-      <!-- PHOTO LIGHTBOX -->
-      <div id="photoLightbox" class="photo-lightbox hidden">
-        <button id="closePhoto" class="close-photo" aria-label="Close photo">
-          ×
-        </button>
-
-        <button
-          id="prevPhoto"
-          class="lightbox-nav prev"
-          aria-label="Previous photo"
-        >
-          ‹
-        </button>
-
-        <div class="lightbox-content">
-          <div class="lightbox-photo-frame">
-            <img id="lightboxImage" src="" alt="Memory" />
-          </div>
-
-          <p id="lightboxCaption">Memory</p>
-
-          <span id="lightboxCounter"> 01 / 50 </span>
-        </div>
-
-        <button
-          id="nextPhoto"
-          class="lightbox-nav next"
-          aria-label="Next photo"
-        >
-          ›
-        </button>
-      </div>
-
-      <!-- A LITTLE MOMENT VIDEO -->
-      <section class="section moment-section">
-        <p class="eyebrow">— A LITTLE MOMENT —</p>
-
-        <h2>A Moment for You</h2>
-
-        <p class="muted">Just a little moment I wanted you to keep. 💗</p>
-
-        <div class="moment-video-card">
-          <div class="video-wrapper">
-            <video
-              id="momentVideo"
-              preload="metadata"
-              playsinline
-              poster="assets/photos/photo-01.svg"
-            >
-              <source src="assets/videos/moment.mp4" type="video/mp4" />
-              Browser kamu tidak mendukung video.
-            </video>
-
-            <!-- Play button -->
+        <div class="memory-polaroids">
+          <!-- POLAROID 1 -->
+          <div class="memory-item">
             <button
-              id="momentPlay"
-              class="moment-play"
-              aria-label="Play moment video"
+              class="memory-polaroid"
+              data-group="0"
+              aria-label="Open memory collection 1"
             >
-              ▶
+              <img
+                class="memory-image"
+                src="assets/photos/photo-1.jpg"
+                alt="Memory collection 1"
+                loading="lazy"
+              />
+
+              <span class="memory-caption"> Our Little Moments 💗 </span>
             </button>
 
-            <!-- Overlay -->
-            <div class="video-overlay"></div>
+            <p class="memory-number"><span>01</span> / 10</p>
           </div>
 
-          <div class="moment-info">
-            <span>✦ A LITTLE MEMORY ✦</span>
+          <!-- POLAROID 2 -->
+          <div class="memory-item">
+            <button
+              class="memory-polaroid"
+              data-group="1"
+              aria-label="Open memory collection 2"
+            >
+              <img
+                class="memory-image"
+                src="assets/photos/photo-11.jpg"
+                alt="Memory collection 2"
+                loading="lazy"
+              />
 
-            <h3>One Little Moment</h3>
+              <span class="memory-caption"> Beautiful Memories ✨ </span>
+            </button>
 
-            <p>A small moment, but a memory worth keeping forever. 💕</p>
+            <p class="memory-number"><span>01</span> / 10</p>
+          </div>
+
+          <!-- POLAROID 3 -->
+          <div class="memory-item">
+            <button
+              class="memory-polaroid"
+              data-group="2"
+              aria-label="Open memory collection 3"
+            >
+              <img
+                class="memory-image"
+                src="assets/photos/photo-21.jpg"
+                alt="Memory collection 3"
+                loading="lazy"
+              />
+
+              <span class="memory-caption"> Moments Together 🌸 </span>
+            </button>
+
+            <p class="memory-number"><span>01</span> / 10</p>
+          </div>
+
+          <!-- POLAROID 4 -->
+          <div class="memory-item">
+            <button
+              class="memory-polaroid"
+              data-group="3"
+              aria-label="Open memory collection 4"
+            >
+              <img
+                class="memory-image"
+                src="assets/photos/photo-31.jpg"
+                alt="Memory collection 4"
+                loading="lazy"
+              />
+
+              <span class="memory-caption"> Sweet Memories 🌷 </span>
+            </button>
+
+            <p class="memory-number"><span>01</span> / 10</p>
+          </div>
+
+          <!-- POLAROID 5 -->
+          <div class="memory-item">
+            <button
+              class="memory-polaroid"
+              data-group="4"
+              aria-label="Open memory collection 5"
+            >
+              <img
+                class="memory-image"
+                src="assets/photos/photo-41.jpg"
+                alt="Memory collection 5"
+                loading="lazy"
+              />
+
+              <span class="memory-caption"> Forever Memories 🌹 </span>
+            </button>
+
+            <p class="memory-number"><span>01</span> / 10</p>
+          </div>
+
+          <div class="memory-item">
+            <button
+              class="memory-polaroid"
+              data-group="5"
+              aria-label="Open memory collection 6"
+            >
+              <img
+                class="memory-image"
+                src="assets/photos/photo-51.jpg"
+                alt="Memory collection 6"
+                loading="lazy"
+              />
+
+              <span class="memory-caption"> Our Photo Studios 📸 </span>
+            </button>
+
+            <p class="memory-number"><span>01</span> / 10</p>
           </div>
         </div>
       </section>
