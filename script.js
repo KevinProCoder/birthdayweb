@@ -7,8 +7,8 @@ const CONFIG = {
   popupDelayMs: 3500,
 
   photos: Array.from(
-    { length: 10 },
-    (_, i) => `assets/photos/photo-${String(i + 1).padStart(2, "0")}.svg`,
+    { length: 50 },
+    (_, i) => `assets/photos/photo-${String(i + 1).padStart(2, "0")}.jpg`,
   ),
 
   captions: Array.from(
@@ -275,36 +275,245 @@ function typeText(el, text, speed) {
   }, speed);
 }
 
-/* =========================================
-   PHOTO MEMORY
-========================================= */
+/* =========================
+   PHOTO GALLERY
+========================= */
 
-$("#photoCard").addEventListener("click", () => {
-  photoIndex = (photoIndex + 1) % CONFIG.photos.length;
+const photoGallery = $("#photoGallery");
+const photoLightbox = $("#photoLightbox");
+const lightboxImage = $("#lightboxImage");
+const lightboxCaption = $("#lightboxCaption");
+const lightboxCounter = $("#lightboxCounter");
 
-  $("#memoryImage").src = CONFIG.photos[photoIndex];
+let currentPhoto = 0;
 
-  $("#memoryCaption").textContent = CONFIG.captions[photoIndex];
 
-  $("#photoNumber").textContent = photoIndex + 1;
+/* CREATE 50 POLAROIDS */
 
-  $("#photoCard").animate(
-    [
-      {
-        transform: "rotate(2deg) scale(.96)",
-      },
+function renderPhotoGallery(){
 
-      {
-        transform: "rotate(-2deg) scale(1)",
-      },
-    ],
+  photoGallery.innerHTML = "";
 
-    {
-      duration: 450,
-      easing: "cubic-bezier(.2,.8,.2,1)",
-    },
-  );
+  CONFIG.photos.forEach((photo,index)=>{
+
+    const polaroid = document.createElement("button");
+
+    polaroid.className = "gallery-polaroid";
+
+    /*
+      5 kolom:
+      index 0-4   = baris 1
+      index 5-9   = baris 2
+      index 10-14 = baris 3
+      dst...
+    */
+    const row = Math.floor(index / 5);
+    const column = index % 5;
+
+    polaroid.style.setProperty(
+      "--rotate",
+      `${(Math.random() * 10 - 5).toFixed(2)}deg`
+    );
+
+    polaroid.style.setProperty(
+      "--x",
+      `${(Math.random() * 24 - 12).toFixed(0)}px`
+    );
+
+    polaroid.style.setProperty(
+      "--y",
+      `${(Math.random() * 24 - 12).toFixed(0)}px`
+    );
+
+    /*
+      Delay berdasarkan BARIS.
+      Jadi satu baris muncul bersamaan,
+      kemudian baru baris berikutnya.
+    */
+    polaroid.style.setProperty(
+      "--row-delay",
+      `${row * 0.28}s`
+    );
+
+    /*
+      Sedikit perbedaan antar foto
+      dalam baris yang sama.
+    */
+    polaroid.style.setProperty(
+      "--column-delay",
+      `${column * 0.06}s`
+    );
+
+    polaroid.innerHTML = `
+      <img 
+        src="${photo}" 
+        alt="Memory ${String(index + 1).padStart(2,"0")}"
+        loading="lazy"
+      >
+
+      <span>
+        ${String(index + 1).padStart(2,"0")}
+      </span>
+    `;
+
+    polaroid.addEventListener("click",()=>{
+
+      currentPhoto = index;
+
+      openPhoto(currentPhoto);
+
+    });
+
+    photoGallery.appendChild(polaroid);
+
+  });
+
+}
+
+
+/* OPEN LIGHTBOX */
+
+function openPhoto(index){
+
+  currentPhoto = index;
+
+  lightboxImage.src = CONFIG.photos[index];
+
+  lightboxImage.alt =
+    `Memory ${String(index + 1).padStart(2,"0")}`;
+
+  lightboxCounter.textContent =
+    `${String(index + 1).padStart(2,"0")} / ${CONFIG.photos.length}`;
+
+  lightboxCaption.textContent =
+    `Memory ${String(index + 1).padStart(2,"0")} 💗`;
+
+  photoLightbox.classList.remove("hidden");
+
+  document.body.style.overflow = "hidden";
+
+}
+
+
+/* CLOSE */
+
+function closePhoto(){
+
+  photoLightbox.classList.add("hidden");
+
+  document.body.style.overflow = "";
+
+}
+
+$("#closePhoto").addEventListener("click",closePhoto);
+
+
+/* NEXT */
+
+$("#nextPhoto").addEventListener("click",()=>{
+
+  currentPhoto =
+    (currentPhoto + 1) % CONFIG.photos.length;
+
+  openPhoto(currentPhoto);
+
 });
+
+
+/* PREVIOUS */
+
+$("#prevPhoto").addEventListener("click",()=>{
+
+  currentPhoto =
+    (currentPhoto - 1 + CONFIG.photos.length)
+    % CONFIG.photos.length;
+
+  openPhoto(currentPhoto);
+
+});
+
+
+/* CLICK BACKGROUND TO CLOSE */
+
+photoLightbox.addEventListener("click",(e)=>{
+
+  if(e.target === photoLightbox){
+
+    closePhoto();
+
+  }
+
+});
+
+
+/* KEYBOARD */
+
+document.addEventListener("keydown",(e)=>{
+
+  if(photoLightbox.classList.contains("hidden")) return;
+
+  if(e.key === "Escape"){
+
+    closePhoto();
+
+  }
+
+  if(e.key === "ArrowRight"){
+
+    currentPhoto =
+      (currentPhoto + 1) % CONFIG.photos.length;
+
+    openPhoto(currentPhoto);
+
+  }
+
+  if(e.key === "ArrowLeft"){
+
+    currentPhoto =
+      (currentPhoto - 1 + CONFIG.photos.length)
+      % CONFIG.photos.length;
+
+    openPhoto(currentPhoto);
+
+  }
+
+});
+
+
+/* START GALLERY */
+
+renderPhotoGallery();
+
+/* =========================
+   GALLERY SCROLL ANIMATION
+========================= */
+
+let galleryAnimated = false;
+
+const galleryObserver = new IntersectionObserver(
+  (entries) => {
+
+    entries.forEach(entry => {
+
+      if(entry.isIntersecting && !galleryAnimated){
+
+        galleryAnimated = true;
+
+        photoGallery.classList.add("gallery-visible");
+
+        galleryObserver.unobserve(photoGallery);
+
+      }
+
+    });
+
+  },
+  {
+    threshold:0.15
+  }
+);
+
+galleryObserver.observe(photoGallery);
 
 /* =========================================
    AUDIO PLAYER

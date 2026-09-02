@@ -288,23 +288,51 @@
       <!-- PHOTO MEMORIES -->
       <section class="section memories-section">
         <p class="eyebrow">— A COLLECTION OF MEMORIES —</p>
-
         <h2>Our Photo Memories</h2>
+        <p class="muted">
+          A collection of little moments worth remembering. 💗
+        </p>
 
-        <p class="muted">Tap to see it closer ✨</p>
+        <div id="photoGallery" class="photo-gallery">
+          <!-- Foto akan dibuat otomatis oleh JavaScript -->
+        </div>
 
-        <button id="photoCard" class="polaroid" aria-label="Open next memory">
-          <img
-            id="memoryImage"
-            src="assets/photos/photo-01.svg"
-            alt="Memory placeholder"
-          />
+        <p class="photo-counter"><span id="photoNumber">50</span> memories</p>
+      </section>
 
-          <span id="memoryCaption"> Memory 01 💗 </span>
+      <!-- PHOTO LIGHTBOX -->
+      <div id="photoLightbox" class="photo-lightbox hidden">
+        <button id="closePhoto" class="close-photo" aria-label="Close photo">
+          ×
         </button>
 
-        <p class="photo-counter"><span id="photoNumber">1</span> / 10</p>
-      </section>
+        <button
+          id="prevPhoto"
+          class="lightbox-nav prev"
+          aria-label="Previous photo"
+        >
+          ‹
+        </button>
+
+        <div class="lightbox-content">
+          <div class="lightbox-photo-frame">
+            <img id="lightboxImage" src="" alt="Memory" />
+          </div>
+
+          <p id="lightboxCaption">Memory</p>
+
+          <span id="lightboxCounter"> 01 / 50 </span>
+        </div>
+
+        <button
+          id="nextPhoto"
+          class="lightbox-nav next"
+          aria-label="Next photo"
+        >
+          ›
+        </button>
+      </div>
+
       <!-- A LITTLE MOMENT VIDEO -->
       <section class="section moment-section">
         <p class="eyebrow">— A LITTLE MOMENT —</p>
