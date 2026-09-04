@@ -1991,3 +1991,17 @@ p {
     transform: scale(1) rotate(0deg);
   }
 }
+
+/* CSS untuk efek video play button menghilang */
+
+.moment-play {
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+}
+
+.moment-play.hidden-play {
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0.8);
+}

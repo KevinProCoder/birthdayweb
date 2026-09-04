@@ -912,61 +912,108 @@ const momentVideo = $("#momentVideo");
 const momentPlay = $("#momentPlay");
 const momentCard = $(".moment-video-card");
 
-if (momentVideo && momentPlay && momentCard && audio) {
+let playButtonTimer;
 
-  momentPlay.addEventListener("click", () => {
+if (momentVideo && momentPlay && momentCard) {
 
-    if (momentVideo.paused) {
-      // Pause musik ketika video mulai
+  // Tombol Play sebelum video dimainkan
+  momentPlay.textContent = "▶";
+  momentPlay.classList.remove("hidden-play");
+
+  // Fungsi menyembunyikan tombol setelah beberapa detik
+  function hidePlayButton() {
+    clearTimeout(playButtonTimer);
+
+    playButtonTimer = setTimeout(() => {
+      if (!momentVideo.paused && !momentVideo.ended) {
+        momentPlay.classList.add("hidden-play");
+      }
+    }, 1800);
+  }
+
+  // Klik tombol Play
+  momentPlay.addEventListener("click", (e) => {
+    e.stopPropagation();
+
+    if (momentVideo.paused || momentVideo.ended) {
+
+      // Pause musik website
       if (!audio.paused) {
         audio.pause();
       }
 
-      momentVideo.play();
+      // Kalau video sudah selesai, mulai dari awal
+      if (momentVideo.ended) {
+        momentVideo.currentTime = 0;
+      }
+
+      momentVideo.play().catch(() => {
+        console.log("Video tidak dapat diputar.");
+      });
 
     } else {
-      // Pause video
       momentVideo.pause();
     }
-
   });
 
-  // Ketika video mulai dimainkan
+  // Klik area video
+  momentVideo.addEventListener("click", () => {
+
+    if (momentVideo.paused || momentVideo.ended) {
+
+      if (momentVideo.ended) {
+        momentVideo.currentTime = 0;
+      }
+
+      momentVideo.play().catch(() => {});
+
+    } else {
+      momentVideo.pause();
+    }
+  });
+
+  // Video mulai dimainkan
   momentVideo.addEventListener("play", () => {
 
-    // Pastikan musik berhenti
-    if (!audio.paused) {
-      audio.pause();
-    }
-
-    momentPlay.textContent = "❚❚";
+    momentPlay.textContent = "▶";
     momentCard.classList.add("video-playing");
 
+    // Tombol masih terlihat sebentar
+    momentPlay.classList.remove("hidden-play");
+
+    hidePlayButton();
   });
 
-  // Ketika video di-pause
+  // Video di-pause
   momentVideo.addEventListener("pause", () => {
 
-    momentPlay.textContent = "▶";
-    momentCard.classList.remove("video-playing");
+    clearTimeout(playButtonTimer);
 
+    // Tombol muncul kembali
+    momentPlay.classList.remove("hidden-play");
+
+    momentPlay.textContent = "▶";
+
+    momentCard.classList.remove("video-playing");
   });
 
-  // Ketika video selesai
+  // Video selesai
   momentVideo.addEventListener("ended", () => {
 
-    momentPlay.textContent = "▶";
-    momentCard.classList.remove("video-playing");
+    clearTimeout(playButtonTimer);
 
-    // Lanjutkan musik dari posisi terakhir
+    // Tampilkan tombol Replay
+    momentPlay.classList.remove("hidden-play");
+
+    momentPlay.textContent = "↻";
+
+    momentCard.classList.add("video-ended");
+
+    // Musik kembali dimainkan
     if (audioStarted) {
-      audio.play().catch(() => {
-        console.log("Browser memblokir autoplay audio.");
-      });
+      audio.play().catch(() => {});
     }
-
   });
-
 }
 
 let birthdayPopupShown = false;
